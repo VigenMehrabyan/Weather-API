@@ -85,7 +85,10 @@ export function CitySearch({ onSelect, recent, busy }: Props) {
     } else {
       const place = options[index]
       if (!place) return
-      onSelect(`${place.lat},${place.lon}`, `${place.name}, ${place.country}`)
+      // Not lat/lon: WeatherAPI reverse-geocodes coordinates to the nearest
+      // named place, so Paris arrives as "Saint-Merri" and Tokyo as
+      // "Hatagaya". The search result's id resolves to the city you picked.
+      onSelect(`id:${place.id}`, `${place.name}, ${place.country}`)
     }
     setTerm("")
     setOpen(false)

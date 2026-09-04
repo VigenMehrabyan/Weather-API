@@ -33,6 +33,37 @@ const ALLOWED_PARAMS = [
   "lang",
 ] as const
 
+/**
+ * Names the city an IP sits in.
+ *
+ * Passing a bare IP to current/forecast makes WeatherAPI answer with the
+ * nearest named place, which is usually a neighbourhood rather than a city:
+ * 8.8.8.8 comes back as "Santiago Villa Mobile Home Park", and a Yerevan
+ * address as the "Aj'ap'nyak" district. /ip.json answers at city level, so ask
+ * it first and use the city name as the query.
+ */
+async function cityForIp(ip: string, key: string): Promise<string | null> {
+  try {
+    const url = new URL(`${UPSTREAM}/ip.json`)
+    url.searchParams.set("key", key)
+    url.searchParams.set("q", ip)
+
+    const response = await fetch(url, {
+      headers: { accept: "application/json" },
+      signal: AbortSignal.timeout(5_000),
+    })
+    if (!response.ok) return null
+
+    const data = await response.json()
+    if (typeof data?.city !== "string" || data.city === "") return null
+    // The region disambiguates cities that share a name.
+    return data.region ? `${data.city}, ${data.region}` : data.city
+  } catch {
+    // Falling back to the raw IP still produces a usable, if less tidy, answer.
+    return null
+  }
+}
+
 /** Loopback and RFC1918 addresses cannot be geolocated; treat them as unusable. */
 function isPublicAddress(ip: string): boolean {
   if (ip === "::1" || ip.startsWith("127.") || ip.startsWith("fe80:")) return false
@@ -121,7 +152,8 @@ export default async (request: Request): Promise<Response> => {
     // Under `netlify dev` the visitor is localhost, which WeatherAPI cannot
     // place; leaving "auto:ip" is the better answer there.
     if (clientIp && isPublicAddress(clientIp)) {
-      upstream.searchParams.set("q", clientIp)
+      const city = await cityForIp(clientIp, key)
+      upstream.searchParams.set("q", city ?? clientIp)
     }
   }
 

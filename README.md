@@ -66,9 +66,17 @@ npm run lint              # oxlint
 | `/forecast.json` | Current conditions, hourly and 14-day forecast, sunrise/sunset |
 | `/search.json` | City autocomplete |
 | `/history.json` | The History tab |
+| `/ip.json` | Naming the visitor's city for the default view |
 
-`q` accepts a city name, `lat,lon`, or `auto:ip`. The app sends coordinates when
-you allow geolocation and falls back to `auto:ip` when you don't.
+Picking a city from the search box sends `id:<id>` from the search result, not
+coordinates: WeatherAPI reverse-geocodes `lat,lon` to the nearest named place,
+which turns Paris into "Saint-Merri" and Tokyo into "Hatagaya". The "use my
+location" button does send coordinates, because there the nearest named place is
+the most precise answer.
+
+The default view uses `auto:ip`. The proxy resolves that against the visitor
+rather than itself, and names the result through `/ip.json`, which answers at
+city level where `current.json` would answer with a neighbourhood.
 
 WeatherAPI's free plan caps the forecast at 3 days and excludes history. The
 client detects error code `2009` and quietly retries with a shorter range

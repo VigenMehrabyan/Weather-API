@@ -39,8 +39,11 @@ export function CurrentPanel({
   refreshing,
 }: Props) {
   const Icon = iconForCode(current.condition.code, current.is_day === 1)
-  const place = [location.name, location.region || location.country]
-    .filter(Boolean)
+  // The heading already carries the name, so the sub-line places it in context
+  // instead of repeating it — "Aj'ap'nyak" over "Yerevan, Armenia", not over
+  // "Aj'ap'nyak, Yerevan".
+  const place = [location.region, location.country]
+    .filter((part) => part && part !== location.name)
     .join(", ")
 
   return (
@@ -54,7 +57,8 @@ export function CurrentPanel({
             {location.name}
           </h1>
           <p className="mt-1 truncate text-sm text-muted-foreground">
-            {place} &middot; {localTime(location)} local
+            {place && <>{place} &middot; </>}
+            {localTime(location)} local
           </p>
         </div>
 
