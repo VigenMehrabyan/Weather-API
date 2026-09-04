@@ -56,8 +56,18 @@ async function cityForIp(ip: string, key: string): Promise<string | null> {
 
     const data = await response.json()
     if (typeof data?.city !== "string" || data.city === "") return null
-    // The region disambiguates cities that share a name.
-    return data.region ? `${data.city}, ${data.region}` : data.city
+
+    // /ip.json names the city with its district appended in brackets --
+    // "Yerevan (Kanakerr-Zeytun)" -- and that bracket drags the lookup back
+    // down to the district. The city alone is what we want.
+    const city = data.city.replace(/\s*\([^)]*\)\s*$/, "").trim()
+    if (!city) return null
+
+    // Pair it with the country, not the region: "London, England" resolves to
+    // a village in Norway, while "London, United Kingdom" is unambiguous.
+    return typeof data.country_name === "string" && data.country_name
+      ? `${city}, ${data.country_name}`
+      : city
   } catch {
     // Falling back to the raw IP still produces a usable, if less tidy, answer.
     return null
