@@ -1,0 +1,251 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: var(--font-sans);
+    --font-sans: 'Geist Variable', sans-serif;
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
+    --chart-1: oklch(0.87 0 0);
+    --chart-2: oklch(0.556 0 0);
+    --chart-3: oklch(0.439 0 0);
+    --chart-4: oklch(0.371 0 0);
+    --chart-5: oklch(0.269 0 0);
+    --radius: 0.625rem;
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
+    --chart-1: oklch(0.87 0 0);
+    --chart-2: oklch(0.556 0 0);
+    --chart-3: oklch(0.439 0 0);
+    --chart-4: oklch(0.371 0 0);
+    --chart-5: oklch(0.269 0 0);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  html {
+    @apply font-sans;
+    }
+}
+/* ---------------------------------------------------------------------------
+   Weather palette
+   The Nova preset ships a neutral grey scale. These overrides come after it so
+   they win, giving the app a sky-blue accent and chart colours that read as
+   temperature (warm) versus precipitation (cool).
+--------------------------------------------------------------------------- */
+
+:root {
+    --primary: oklch(0.55 0.153 249);
+    --primary-foreground: oklch(0.985 0 0);
+    --ring: oklch(0.62 0.13 249);
+    --chart-1: oklch(0.62 0.17 38);   /* temperature — warm */
+    --chart-2: oklch(0.58 0.14 249);  /* precipitation — cool */
+    --chart-3: oklch(0.70 0.13 190);
+    --chart-4: oklch(0.66 0.15 300);
+    --chart-5: oklch(0.55 0.02 250);
+}
+
+.dark {
+    --primary: oklch(0.70 0.135 249);
+    --primary-foreground: oklch(0.17 0.03 249);
+    --ring: oklch(0.62 0.12 249);
+    --chart-1: oklch(0.74 0.16 45);
+    --chart-2: oklch(0.72 0.13 249);
+    --chart-3: oklch(0.78 0.11 190);
+    --chart-4: oklch(0.74 0.13 300);
+    --chart-5: oklch(0.72 0.02 250);
+}
+
+/* ---------------------------------------------------------------------------
+   Weather scene animations
+--------------------------------------------------------------------------- */
+
+@keyframes sun-rays {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sun-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.95; }
+  50%      { transform: scale(1.045); opacity: 1; }
+}
+
+@keyframes moon-glow {
+  0%, 100% { box-shadow: 0 0 34px rgba(200, 220, 255, 0.35); }
+  50%      { box-shadow: 0 0 58px rgba(200, 220, 255, 0.6); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.85); }
+  50%      { opacity: 1;    transform: scale(1.15); }
+}
+
+@keyframes cloud-drift {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes fog-drift {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-45%); }
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-sun-rays  { animation: sun-rays 90s linear infinite; transform-origin: 50% 50%; }
+.animate-sun-pulse { animation: sun-pulse 6s ease-in-out infinite; }
+.animate-moon-glow { animation: moon-glow 7s ease-in-out infinite; }
+.animate-twinkle   { animation-name: twinkle; animation-iteration-count: infinite; animation-timing-function: ease-in-out; }
+.animate-cloud-drift { animation-name: cloud-drift; animation-timing-function: linear; animation-iteration-count: infinite; will-change: transform; }
+.animate-fog-drift   { animation-name: fog-drift; animation-timing-function: ease-in-out; animation-iteration-count: infinite; animation-direction: alternate; will-change: transform; }
+.animate-rise-in     { animation: rise-in 0.45s ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-sun-rays,
+  .animate-sun-pulse,
+  .animate-moon-glow,
+  .animate-twinkle,
+  .animate-cloud-drift,
+  .animate-fog-drift,
+  .animate-rise-in {
+    animation: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Layout helpers
+--------------------------------------------------------------------------- */
+
+@layer components {
+  /* Frosted card material. The sky behind it can be a bright noon blue or a
+     near-black night in either theme, so each variant is opaque enough to
+     carry its own text contrast rather than relying on the backdrop. */
+  .glass {
+    @apply border border-white/40 bg-white/70 shadow-lg backdrop-blur-xl;
+  }
+  .dark .glass {
+    @apply border-white/10 bg-black/45 shadow-black/40;
+  }
+
+  /* Same material without the backdrop filter, for the many small tiles where
+     a dozen extra composited layers cost more than the blur is worth. */
+  .glass-flat {
+    @apply border border-white/40 bg-white/70 shadow-sm;
+  }
+  .dark .glass-flat {
+    @apply border-white/10 bg-black/45 shadow-black/30;
+  }
+}
+
+/* Horizontal strips scroll without a chunky scrollbar. */
+.scrollbar-slim::-webkit-scrollbar { height: 6px; }
+/* Chrome on Windows draws stepper arrows unless they are explicitly removed. */
+.scrollbar-slim::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+.scrollbar-slim::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-slim::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, currentColor 25%, transparent);
+  border-radius: 999px;
+}
