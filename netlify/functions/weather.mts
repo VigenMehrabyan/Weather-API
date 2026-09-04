@@ -33,16 +33,41 @@ const ALLOWED_PARAMS = [
   "lang",
 ] as const
 
-const json = (body: unknown, status: number, cacheSeconds?: number) =>
-  new Response(JSON.stringify(body), {
+/** Loopback and RFC1918 addresses cannot be geolocated; treat them as unusable. */
+function isPublicAddress(ip: string): boolean {
+  if (ip === "::1" || ip.startsWith("127.") || ip.startsWith("fe80:")) return false
+  if (ip.startsWith("10.") || ip.startsWith("192.168.")) return false
+  const [, second] = ip.split(".")
+  if (ip.startsWith("172.") && Number(second) >= 16 && Number(second) <= 31) {
+    return false
+  }
+  return true
+}
+
+interface CachePolicy {
+  seconds: number
+  /** True when the answer depends on who asked, so the CDN must not share it. */
+  perVisitor: boolean
+}
+
+const json = (body: unknown, status: number, cache?: CachePolicy) => {
+  let cacheControl = "no-store"
+  if (cache?.perVisitor) {
+    // Same URL, different answer per caller — keep it out of the shared cache
+    // or one visitor gets another visitor's city.
+    cacheControl = `private, max-age=${Math.min(cache.seconds, 300)}`
+  } else if (cache) {
+    cacheControl = `public, max-age=60, s-maxage=${cache.seconds}, stale-while-revalidate=600`
+  }
+
+  return new Response(JSON.stringify(body), {
     status,
     headers: {
       "content-type": "application/json; charset=utf-8",
-      "cache-control": cacheSeconds
-        ? `public, max-age=60, s-maxage=${cacheSeconds}, stale-while-revalidate=600`
-        : "no-store",
+      "cache-control": cacheControl,
     },
   })
+}
 
 const fail = (message: string, status: number, code?: number) =>
   json({ error: { message, code } }, status)
@@ -86,6 +111,20 @@ export default async (request: Request): Promise<Response> => {
     upstream.searchParams.set(name, value)
   }
 
+  // "auto:ip" asks WeatherAPI to geolocate the caller — but the caller here is
+  // this function, so it would resolve to whichever data centre is running it.
+  // Substitute the visitor's real address, which Netlify passes through.
+  if (q === "auto:ip") {
+    const clientIp =
+      request.headers.get("x-nf-client-connection-ip") ??
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+    // Under `netlify dev` the visitor is localhost, which WeatherAPI cannot
+    // place; leaving "auto:ip" is the better answer there.
+    if (clientIp && isPublicAddress(clientIp)) {
+      upstream.searchParams.set("q", clientIp)
+    }
+  }
+
   let response: Response
   try {
     response = await fetch(upstream, {
@@ -107,5 +146,8 @@ export default async (request: Request): Promise<Response> => {
     )
   }
 
-  return json(payload, 200, ENDPOINTS[endpoint])
+  return json(payload, 200, {
+    seconds: ENDPOINTS[endpoint],
+    perVisitor: q === "auto:ip",
+  })
 }
